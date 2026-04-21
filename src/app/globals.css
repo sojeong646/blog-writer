@@ -1,26 +1,52 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #f9fafb;
+  --foreground: #111827;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* 원고 결과 영역 스타일 */
+.prose-result h1, .prose-result h2, .prose-result h3 {
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose-result p {
+  margin-bottom: 0.75em;
+  line-height: 1.8;
+}
+
+.prose-result strong {
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.prose-result em {
+  font-style: italic;
+  color: #6b7280;
+}
+
+.prose-result hr {
+  margin: 1.5em 0;
+  border-color: #e5e7eb;
+}
+
+/* 스피너 */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* 텍스트에리어 리사이즈 */
+textarea {
+  resize: vertical;
 }
