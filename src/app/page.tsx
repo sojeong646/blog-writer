@@ -207,7 +207,7 @@ export default function Home() {
                 <div>
                   <label className="block text-[11px] font-medium text-gray-400 mb-1">필수키워드 (서브)</label>
                   <input type="text" value={subKeywords} onChange={(e) => setSubKeywords(e.target.value)}
-                    placeholder="쉼표로 구분" className="w-full px-4 py-2.5 text-sm rounded-xl input-pretty" />
+                    placeholder="띄어쓰기로 구분 (예: 스레드강의 스레드수익화 SNS마케팅)" className="w-full px-4 py-2.5 text-sm rounded-xl input-pretty" />
                 </div>
                 <div>
                   <label className="block text-[11px] font-medium text-gray-400 mb-1">필수 형태소</label>
