@@ -10,8 +10,7 @@ interface CrawlResult {
 
 export default function Home() {
   const [mainKeyword, setMainKeyword] = useState("");
-  const [subKeywords, setSubKeywords] = useState("");
-  const [morphemes, setMorphemes] = useState("");
+  const [requiredWords, setRequiredWords] = useState("");
   const [targetLength, setTargetLength] = useState(2000);
   const [keywordRepeat, setKeywordRepeat] = useState(7);
   const [extra, setExtra] = useState("");
@@ -56,9 +55,8 @@ export default function Home() {
       const res = await fetch("/api/generate", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          mainKeyword: mainKeyword.trim(), subKeywords: subKeywords.trim(),
-          morphemes: morphemes.trim(), targetLength, keywordRepeat,
-          extra: extra.trim(), crawlResults,
+          mainKeyword: mainKeyword.trim(), requiredWords: requiredWords.trim(),
+          targetLength, keywordRepeat, extra: extra.trim(), crawlResults,
         }),
       });
       const data = await res.json();
@@ -177,32 +175,19 @@ export default function Home() {
             {/* 구분선 */}
             <hr className="border-gray-100" />
 
-            {/* 필수키워드 */}
+            {/* 필수키워드 (형태소) */}
             <div>
               <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-                필수키워드 (서브)
+                필수키워드
               </label>
               <input
                 type="text"
-                value={subKeywords}
-                onChange={(e) => setSubKeywords(e.target.value)}
-                placeholder="띄어쓰기로 구분 (예: 스레드강의 스레드수익화 SNS마케팅)"
+                value={requiredWords}
+                onChange={(e) => setRequiredWords(e.target.value)}
+                placeholder="띄어쓰기로 구분 (예: 스레드강의 매출 광고비 자영업자)"
                 className="w-full px-4 py-2.5 text-sm rounded-xl input-pretty"
               />
-            </div>
-
-            {/* 필수 형태소 */}
-            <div>
-              <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-                꼭 들어가야 하는 형태소
-              </label>
-              <input
-                type="text"
-                value={morphemes}
-                onChange={(e) => setMorphemes(e.target.value)}
-                placeholder="띄어쓰기로 구분 (예: 매출 광고비 자영업자)"
-                className="w-full px-4 py-2.5 text-sm rounded-xl input-pretty"
-              />
+              <p className="text-[10px] text-gray-300 mt-1">원고에 꼭 들어가야 하는 단어들</p>
             </div>
 
             {/* 글자수 & 반복횟수 */}

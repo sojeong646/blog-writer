@@ -69,16 +69,14 @@ export async function POST(request: Request) {
     const body = await request.json();
     const {
       mainKeyword,
-      subKeywords,
-      morphemes,
+      requiredWords,
       targetLength,
       keywordRepeat,
       extra,
       crawlResults,
     } = body as {
       mainKeyword: string;
-      subKeywords: string;
-      morphemes: string;
+      requiredWords: string;
       targetLength: number;
       keywordRepeat: number;
       extra: string;
@@ -111,25 +109,32 @@ export async function POST(request: Request) {
       });
     }
 
+    const requiredWordsList = requiredWords
+      ? requiredWords.split(/\s+/).filter(Boolean)
+      : [];
+
     const userPrompt = `
 다음 조건에 맞춰 네이버 블로그 원고를 작성해주세요.
+제목도 함께 작성해주세요.
 
 ## 조건
 - **메인키워드**: ${mainKeyword}
-- **메인키워드 반복 횟수**: 본문에 "${mainKeyword}"를 정확히 ${keywordRepeat}회 이상 자연스럽게 포함
-- **목표 글자 수**: ${targetLength}자 내외
-${subKeywords ? `- **필수키워드(서브)**: ${subKeywords.split(/\s+/).join(", ")} (모두 본문에 자연스럽게 포함)` : ""}
-${morphemes ? `- **필수 형태소**: ${morphemes.split(/[\s,]+/).join(", ")} (모두 본문에 포함)` : ""}
+- **메인키워드 반복**: 제목 + 본문을 합쳐서 "${mainKeyword}"가 ${keywordRepeat}회 이상 자연스럽게 포함되어야 합니다.
+- **목표 글자 수**: ${targetLength}자보다 약간 더 많이 (${Math.round(targetLength * 1.1)}~${Math.round(targetLength * 1.2)}자 정도, 공백 제외 기준)
+${requiredWordsList.length > 0 ? `- **필수키워드**: ${requiredWordsList.join(", ")} (이 단어들이 모두 본문에 자연스럽게 포함되어야 합니다)` : ""}
 ${extra ? `- **기타 요청사항**: ${extra}` : ""}
 ${crawlContext}
+
+## 출력 형식
+첫 줄에 제목을 쓰고, 한 줄 비운 뒤 본문을 작성하세요.
 
 ## 중요 규칙
 1. 위의 문체 가이드를 철저히 따라주세요. 특히 괄호 혼잣말, 귀여운 종결어미, 효과음을 적절히 사용하세요.
 2. 네이버 블로그용이므로 한 문장 = 한 줄, 문장 사이 빈 줄로 가독성을 확보하세요.
 3. AI가 쓴 느낌이 나면 안 됩니다. 진짜 사람이 수다 떨듯이 써주세요.
 4. 마크다운 문법(##, **, * 등)은 사용하지 마세요. 순수 텍스트로만 작성하세요.
-5. 볼드 처리하고 싶은 부분은 그냥 텍스트로 쓰되, 네이버 블로그에 복붙할 수 있게 깔끔하게 작성하세요.
-6. 상위노출 블로그 참고 자료가 있다면, 그 글들의 구조와 키워드 사용 패턴을 참고하되 절대 베끼지 마세요.
+5. 상위노출 블로그 참고 자료가 있다면, 그 글들의 구조와 키워드 사용 패턴을 참고하되 절대 베끼지 마세요.
+6. 필수키워드가 있다면 하나도 빠짐없이 모두 포함해주세요.
 
 원고만 작성해주세요. 설명이나 부연은 필요 없습니다.
 `;
