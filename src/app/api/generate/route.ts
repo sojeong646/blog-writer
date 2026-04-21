@@ -119,7 +119,7 @@ export async function POST(request: Request) {
 - **메인키워드 반복 횟수**: 본문에 "${mainKeyword}"를 정확히 ${keywordRepeat}회 이상 자연스럽게 포함
 - **목표 글자 수**: ${targetLength}자 내외
 ${subKeywords ? `- **필수키워드(서브)**: ${subKeywords.split(/\s+/).join(", ")} (모두 본문에 자연스럽게 포함)` : ""}
-${morphemes ? `- **필수 형태소**: ${morphemes} (모두 본문에 포함)` : ""}
+${morphemes ? `- **필수 형태소**: ${morphemes.split(/[\s,]+/).join(", ")} (모두 본문에 포함)` : ""}
 ${extra ? `- **기타 요청사항**: ${extra}` : ""}
 ${crawlContext}
 
