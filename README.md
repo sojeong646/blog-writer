@@ -13,7 +13,7 @@
 | 프레임워크 | Next.js 16.2.4 (App Router) |
 | 언어 | TypeScript 5.x |
 | 스타일링 | Tailwind CSS 4.x |
-| AI | Anthropic Claude API (claude-sonnet-4-20250514) |
+| AI | Google Gemini API (gemini-2.5-flash) |
 | 크롤링 | Cheerio 1.2.x (네이버 모바일 블로그) |
 | 런타임 | Node.js |
 | 패키지 매니저 | npm |
@@ -26,7 +26,7 @@
 npm install
 
 # 2. 환경변수 설정 (.env.local 파일 생성)
-ANTHROPIC_API_KEY=your-api-key-here
+GEMINI_API_KEY=your-gemini-api-key-here
 
 # 3. 개발 서버 실행
 npm run dev
@@ -49,7 +49,7 @@ blog-writer/
 │           ├── crawl/
 │           │   └── route.ts    # URL 기반 블로그 크롤링 API (모바일 버전)
 │           └── generate/
-│               └── route.ts    # Claude API 원고 생성 API (문체 가이드 내장)
+│               └── route.ts    # Gemini API 원고 생성 API (문체 가이드 내장)
 ├── .env.local                  # 환경변수 (API 키, git 미포함)
 ├── package.json
 └── README.md
@@ -62,7 +62,7 @@ blog-writer/
     ↓
 [포스팅 크롤링] → /api/crawl → 입력된 URL의 블로그 본문 크롤링 (모바일 버전)
     ↓
-[원고 생성] → /api/generate → Claude API 호출 (크롤링 결과 + 문체 가이드 + 조건)
+[원고 생성] → /api/generate → Gemini API 호출 (크롤링 결과 + 문체 가이드 + 조건)
     ↓
 원고 출력 (공백제외 글자수 표시) → [복사] → 네이버 블로그에 붙여넣기
 ```
@@ -102,7 +102,7 @@ blog-writer/
 
 | 변수명 | 설명 | 필수 |
 |--------|------|------|
-| `ANTHROPIC_API_KEY` | Claude API 키 | O |
+| `GEMINI_API_KEY` | Google Gemini API 키 | O |
 
 ---
 
@@ -178,11 +178,10 @@ blog-writer/
 - [x] 글자수: 입력값보다 10~20% 더 많이 작성하도록 변경
 - [x] 키워드 반복: 제목+본문 합산 기준으로 변경
 - [x] 제목도 함께 생성하도록 프롬프트 수정
+- [x] AI 엔진 변경: Anthropic Claude → Google Gemini (gemini-2.5-flash)
+- [x] Vercel 환경변수 설정 완료 (GEMINI_API_KEY)
 
-### 대기 중
-- [ ] Anthropic API 크레딧 구매 (support@anthropic.com 문의 완료, 답변 대기 중)
-
-### 추가 예정 (크레딧 충전 후)
+### 추가 예정
 - [ ] 실제 원고 생성 테스트 및 품질 검증
 - [ ] 원고 생성 스트리밍 응답 (실시간으로 글이 써지는 효과)
 - [ ] 원고 히스토리 저장 (이전에 생성한 원고 다시 보기)
