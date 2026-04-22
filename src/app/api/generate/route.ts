@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const STYLE_GUIDE = `
 ## 소정님 문체 가이드 (네이버 블로그용)
@@ -90,7 +90,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return Response.json(
         { error: "API 키가 설정되지 않았어요. 환경변수를 확인해주세요." },
@@ -98,7 +98,8 @@ export async function POST(request: Request) {
       );
     }
 
-    const client = new Anthropic({ apiKey });
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // 크롤링 결과 정리
     let crawlContext = "";
@@ -113,7 +114,10 @@ export async function POST(request: Request) {
       ? requiredWords.split(/\s+/).filter(Boolean)
       : [];
 
-    const userPrompt = `
+    const prompt = `당신은 네이버 블로그 마케팅 전문 카피라이터입니다. 아래 문체 가이드를 철저히 따라 글을 작성합니다.
+
+${STYLE_GUIDE}
+
 다음 조건에 맞춰 네이버 블로그 원고를 작성해주세요.
 제목도 함께 작성해주세요.
 
@@ -139,15 +143,8 @@ ${crawlContext}
 원고만 작성해주세요. 설명이나 부연은 필요 없습니다.
 `;
 
-    const message = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 4096,
-      system: `당신은 네이버 블로그 마케팅 전문 카피라이터입니다. 아래 문체 가이드를 철저히 따라 글을 작성합니다.\n${STYLE_GUIDE}`,
-      messages: [{ role: "user", content: userPrompt }],
-    });
-
-    const content =
-      message.content[0].type === "text" ? message.content[0].text : "";
+    const result = await model.generateContent(prompt);
+    const content = result.response.text();
 
     return Response.json({ content });
   } catch (error) {
